@@ -30,7 +30,11 @@ A reproducible **research prototype** for generating synthetic optical tracklets
 
 **Current scope:** two-body dynamics, approximate rotating spherical Earth, geometric visibility and a sample-centered circular field-of-view optimizer. **Not** a production satellite-tracking system or calibrated detection-probability engine.
 
-#### Quick start
+#### Mathematical notation and preview compatibility
+
+This README uses **GitHub-flavored Markdown math**: `$...$` for inline equations and `$$` on separate lines for displayed equations. GitHub renders these with MathJax. Some macOS Markdown preview applications do **not** support mathematical notation, even when the Markdown is valid; for consistent viewing, use the rendered README on GitHub or a Markdown preview with math support (for example, VS Code with a math-enabled Markdown extension).
+
+## Quick start
 
 ```bash
 python -m venv .venv
@@ -301,46 +305,46 @@ All vectors below are expressed in the same **approximate Earth-centered inertia
 
 | Symbol | Meaning | Units |
 |---|---|---|
-| \(t\) | Observation time | UTC timestamp |
-| \(t_0\) | Epoch at which an orbit state is defined | UTC timestamp |
-| \(T_0\) | Common synthetic truth initialization time, 2026-10-22 20:00:00 UTC | UTC timestamp |
-| \(t_i\) | Time of observation \(i\), \(i=1,\ldots,N\) | UTC timestamp |
-| \(\tau_i=t_i-t_0\) | Propagation interval relative to fit epoch | s |
-| \(N\) | Number of paired RA/Dec observations | dimensionless |
-| \(\mathbf r(t)\) | Geocentric satellite position | km |
-| \(\mathbf v(t)\) | Geocentric satellite velocity | km/s |
-| \(\mathbf x=(\mathbf r,\mathbf v)\) | Six-component Cartesian orbit state | km; km/s |
-| \(\mathbf r_{\rm st}(t)\) | Station position expressed in the ECI-like frame | km |
-| \(\mathbf v_{\rm st}(t)\) | Station velocity due to Earth rotation | km/s |
-| \(\mathbf d(t)=\mathbf r(t)-\mathbf r_{\rm st}(t)\) | Topocentric line-of-sight vector | km |
-| \(\rho=\|\mathbf d\|\) | Topocentric range | km |
-| \(\dot\rho\) | Topocentric radial range rate | km/s |
-| \(\hat{\mathbf u}=\mathbf d/\rho\) | Unit line-of-sight vector | dimensionless |
-| \(\alpha,\delta\) | Right ascension and declination | rad |
-| \(\alpha_i,\delta_i\) | Measured RA/Dec for observation \(i\) | rad |
-| \(\hat\alpha_i(\mathbf x),\hat\delta_i(\mathbf x)\) | Predicted RA/Dec from a trial orbit | rad |
-| \(\Delta\alpha_i,\Delta\delta_i\) | Wrapped RA and ordinary Dec prediction-minus-observation residuals | rad |
-| \(\sigma_\alpha,\sigma_\delta\) | Assumed standard deviations of RA and Dec coordinate errors | arcsec or rad |
-| \(\mu\) | Earth's gravitational parameter, 398600.4418 | km³/s² |
-| \(R_E\) | Spherical Earth reference radius, approximately 6378.137 | km |
-| \(\omega_E\) | Earth's rotation angular speed | rad/s |
-| \(\theta_{\rm GMST}(t)\) | Approximate Greenwich mean sidereal angle | rad |
-| \(\varphi,\lambda,h_{\rm st}\) | Station latitude, longitude, altitude | deg, deg, km |
-| \(\chi^2(\mathbf x)\) | Sum of squared standardized angular residuals | dimensionless |
-| \(\hat{\mathbf x}\) | Fitted state with smallest accepted \(\chi^2\) among attempted seeds | km; km/s |
-| \(\mathbf x_{\rm circ}\) | Best circular initialization state | km; km/s |
-| \(a,e,i,\Omega,\omega,M\) | Semimajor axis, eccentricity, inclination, right ascension of ascending node, argument of periapsis, mean anomaly | km, dimensionless, angles |
-| \(r_p=a(1-e)\) | Perigee radius for a bound Keplerian ellipse | km |
-| \(h_p=r_p-R_E\) | Perigee altitude | km |
-| \(J\) | Jacobian of standardized angular residuals with respect to scaled state corrections | dimensionless in scaled coordinates |
-| \(U,S,V^\mathsf T\) | Singular-value decomposition of \(J\) | as defined in §7 |
-| \(s_j\) | Singular value \(j\) of \(J\) | dimensionless |
-| \(q(\mathbf x)\) | Local Gaussian *proposal* density for candidate states | inverse state-space volume |
-| \(n_{\rm draw}\) | Number of proposed Monte Carlo states | dimensionless |
-| \(n_{\rm phys}\) | Number passing the physical orbit filter | dimensionless |
-| \(n_{\rm acc}\) | Number passing both physical and angular-fit filters | dimensionless |
+| $t$ | Observation time | UTC timestamp |
+| $t_0$ | Epoch at which an orbit state is defined | UTC timestamp |
+| $T_0$ | Common synthetic truth initialization time, 2026-10-22 20:00:00 UTC | UTC timestamp |
+| $t_i$ | Time of observation $i$, $i=1,\ldots,N$ | UTC timestamp |
+| $\tau_i=t_i-t_0$ | Propagation interval relative to fit epoch | s |
+| $N$ | Number of paired RA/Dec observations | dimensionless |
+| $\mathbf r(t)$ | Geocentric satellite position | km |
+| $\mathbf v(t)$ | Geocentric satellite velocity | km/s |
+| $\mathbf x=(\mathbf r,\mathbf v)$ | Six-component Cartesian orbit state | km; km/s |
+| $\mathbf r_{\rm st}(t)$ | Station position expressed in the ECI-like frame | km |
+| $\mathbf v_{\rm st}(t)$ | Station velocity due to Earth rotation | km/s |
+| $\mathbf d(t)=\mathbf r(t)-\mathbf r_{\rm st}(t)$ | Topocentric line-of-sight vector | km |
+| $\rho=\|\mathbf d\|$ | Topocentric range | km |
+| $\dot\rho$ | Topocentric radial range rate | km/s |
+| $\hat{\mathbf u}=\mathbf d/\rho$ | Unit line-of-sight vector | dimensionless |
+| $\alpha,\delta$ | Right ascension and declination | rad |
+| $\alpha_i,\delta_i$ | Measured RA/Dec for observation $i$ | rad |
+| $\hat\alpha_i(\mathbf x),\hat\delta_i(\mathbf x)$ | Predicted RA/Dec from a trial orbit | rad |
+| $\Delta\alpha_i,\Delta\delta_i$ | Wrapped RA and ordinary Dec prediction-minus-observation residuals | rad |
+| $\sigma_\alpha,\sigma_\delta$ | Assumed standard deviations of RA and Dec coordinate errors | arcsec or rad |
+| $\mu$ | Earth's gravitational parameter, 398600.4418 | km³/s² |
+| $R_E$ | Spherical Earth reference radius, approximately 6378.137 | km |
+| $\omega_E$ | Earth's rotation angular speed | rad/s |
+| $\theta_{\rm GMST}(t)$ | Approximate Greenwich mean sidereal angle | rad |
+| $\varphi,\lambda,h_{\rm st}$ | Station latitude, longitude, altitude | deg, deg, km |
+| $\chi^2(\mathbf x)$ | Sum of squared standardized angular residuals | dimensionless |
+| $\hat{\mathbf x}$ | Fitted state with smallest accepted $\chi^2$ among attempted seeds | km; km/s |
+| $\mathbf x_{\rm circ}$ | Best circular initialization state | km; km/s |
+| $a,e,i,\Omega,\omega,M$ | Semimajor axis, eccentricity, inclination, right ascension of ascending node, argument of periapsis, mean anomaly | km, dimensionless, angles |
+| $r_p=a(1-e)$ | Perigee radius for a bound Keplerian ellipse | km |
+| $h_p=r_p-R_E$ | Perigee altitude | km |
+| $J$ | Jacobian of standardized angular residuals with respect to scaled state corrections | dimensionless in scaled coordinates |
+| $U,S,V^\mathsf T$ | Singular-value decomposition of $J$ | as defined in §7 |
+| $s_j$ | Singular value $j$ of $J$ | dimensionless |
+| $q(\mathbf x)$ | Local Gaussian *proposal* density for candidate states | inverse state-space volume |
+| $n_{\rm draw}$ | Number of proposed Monte Carlo states | dimensionless |
+| $n_{\rm phys}$ | Number passing the physical orbit filter | dimensionless |
+| $n_{\rm acc}$ | Number passing both physical and angular-fit filters | dimensionless |
 
-**Terminology:** The symbol \(\omega\) denotes *argument of periapsis*; \(\omega_E\) denotes *Earth's rotation rate*. These are unrelated. Likewise \(M\) is *mean anomaly*, not the number of measurements \(N\).
+**Terminology:** The symbol $\omega$ denotes *argument of periapsis*; $\omega_E$ denotes *Earth's rotation rate*. These are unrelated. Likewise $M$ is *mean anomaly*, not the number of measurements $N$.
 
 #### 4. Dynamics, Earth rotation and observation model
 
@@ -348,10 +352,10 @@ All vectors below are expressed in the same **approximate Earth-centered inertia
 
 The fitted orbit is propagated using
 
-\[
+$$
 \frac{d\mathbf r}{dt}=\mathbf v,\qquad
 \frac{d\mathbf v}{dt}=-\mu\frac{\mathbf r}{\|\mathbf r\|^3}.
-\]
+$$
 
 `propagate_at` uses SciPy's `solve_ivp` with DOP853 and dense output. It integrates from the state epoch forward and backward as needed, including across the approximately two-hour gap between observing windows. The state is **not reset** between windows.
 
@@ -359,77 +363,77 @@ The fitted orbit is propagated using
 
 The ground station is fixed on the simplified spherical Earth at
 
-\[
+$$
 (\varphi,\lambda,h_{\rm st})=(46.95^\circ,7.44^\circ,0.55\ {\rm km}).
-\]
+$$
 
 Its inertial-like position is recomputed at **each** observation time:
 
-\[
+$$
 \mathbf r_{\rm st}(t)=(R_E+h_{\rm st})
 \begin{bmatrix}
 \cos\varphi\cos[\theta_{\rm GMST}(t)+\lambda]\\
 \cos\varphi\sin[\theta_{\rm GMST}(t)+\lambda]\\
 \sin\varphi
 \end{bmatrix}.
-\]
+$$
 
 The corresponding rotational velocity is
-\[
+$$
 \mathbf v_{\rm st}(t)=(0,0,\omega_E)\times\mathbf r_{\rm st}(t).
-\]
+$$
 
 Therefore, Earth rotation is **included** in the line-of-sight predictions for every tracklet and for the second observing window. The coordinates are ECI-*like*, not a fully rigorous ICRS/GCRS/J2000 transformation. UTC is approximated as UT1, and Earth flattening and detailed Earth orientation are omitted.
 
 ##### 4.3 Predicted optical angles
 
-Given \(\mathbf d_i=\mathbf r(t_i)-\mathbf r_{\rm st}(t_i)\),
+Given $\mathbf d_i=\mathbf r(t_i)-\mathbf r_{\rm st}(t_i)$,
 
-\[
+$$
 \hat\alpha_i=\operatorname{atan2}(d_{y,i},d_{x,i})\pmod{2\pi},
 \qquad
 \hat\delta_i=\operatorname{atan2}
 \left(d_{z,i},\sqrt{d_{x,i}^2+d_{y,i}^2}\right).
-\]
+$$
 
 The forward model does not currently apply light-time, aberration, refraction, optical visibility or illumination corrections.
 
 #### 5. Synthetic orbit and five observation configurations
 
-The **same synthetic satellite** is used in all experiments. At \(T_0\),
+The **same synthetic satellite** is used in all experiments. At $T_0$,
 
-\[
+$$
 \mathbf r(T_0)=\mathbf r_{\rm st}(T_0)+20\,000\ {\rm km}\,\hat{\mathbf u}_{\rm up},
 \qquad
 \mathbf v(T_0)=3.5\ {\rm km/s}\,\hat{\mathbf e}_{\rm east},
-\]
+$$
 
-where \(\hat{\mathbf u}_{\rm up}=\mathbf r_{\rm st}(T_0)/\|\mathbf r_{\rm st}(T_0)\|\) and
-\(\hat{\mathbf e}_{\rm east}\) is the normalized cross product of the Earth-spin-axis unit vector with \(\hat{\mathbf u}_{\rm up}\).
+where $\hat{\mathbf u}_{\rm up}=\mathbf r_{\rm st}(T_0)/\|\mathbf r_{\rm st}(T_0)\|$ and
+$\hat{\mathbf e}_{\rm east}$ is the normalized cross product of the Earth-spin-axis unit vector with $\hat{\mathbf u}_{\rm up}$.
 
 This produces an **elliptical**, not circular, orbit with
 
-\[
+$$
 a_{\rm true}=22\,179.7086\ {\rm km},\quad
 e_{\rm true}=0.1893162,\quad
 i_{\rm true}=46.95^\circ,\quad
 \Omega_{\rm true}=248.70256^\circ,\quad
 \omega_{\rm true}=270^\circ.
-\]
+$$
 
-Mean anomaly \(M\) changes with the chosen fit epoch; comparisons of \(M\) are made at the same epoch.
+Mean anomaly $M$ changes with the chosen fit epoch; comparisons of $M$ are made at the same epoch.
 
 At each observation time the truth is propagated, converted into topocentric RA/Dec, and perturbed by independent normal errors:
 
-\[
+$$
 \alpha_i=\alpha_{\rm true}(t_i)+\epsilon_{\alpha,i},\quad
 \delta_i=\delta_{\rm true}(t_i)+\epsilon_{\delta,i},
 \quad
 \epsilon_{\alpha,i},\epsilon_{\delta,i}\sim\mathcal N(0,\sigma^2),
-\]
-where \(\sigma=5\) arcsec **in each angular coordinate**.
+$$
+where $\sigma=5$ arcsec **in each angular coordinate**.
 
-| Case | \(N\) | Observation times relative to \(T_0\) | Noise generation |
+| Case | $N$ | Observation times relative to $T_0$ | Noise generation |
 |---|---:|---|---|
 | 3 min | 20 | 0–180 s | Separate reproducible random seed 303 |
 | 5 min | 30 | 0–300 s | Separate reproducible random seed 305 |
@@ -445,21 +449,21 @@ The old **70-second** case had eight observations over 0–70 s. It is retained 
 
 ##### 6.1 Circular seed search
 
-A single angular tracklet directly constrains direction and angular motion, but not the topocentric range \(\rho\) and range rate \(\dot\rho\) separately. The algorithm uses the measured angular direction at its chosen fit epoch to form trial positions
+A single angular tracklet directly constrains direction and angular motion, but not the topocentric range $\rho$ and range rate $\dot\rho$ separately. The algorithm uses the measured angular direction at its chosen fit epoch to form trial positions
 
-\[
+$$
 \mathbf r=\mathbf r_{\rm st}(t_0)+\rho\hat{\mathbf u}.
-\]
+$$
 
 For each trial position, it imposes a *temporary* circular-orbit velocity:
 
-\[
+$$
 \mathbf v_{\rm circ}
 =\sqrt{\frac{\mu}{\|\mathbf r\|}}
 \bigl(\cos\psi\,\mathbf e_1+\sin\psi\,\mathbf e_2\bigr),
-\]
+$$
 
-where \(\mathbf e_1,\mathbf e_2\) are orthonormal vectors perpendicular to \(\mathbf r\), and \(\psi\) is a trial in-plane velocity angle. Here \(\psi\) is a **seed-search parameter**, not the orbital argument of periapsis \(\omega\).
+where $\mathbf e_1,\mathbf e_2$ are orthonormal vectors perpendicular to $\mathbf r$, and $\psi$ is a trial in-plane velocity angle. Here $\psi$ is a **seed-search parameter**, not the orbital argument of periapsis $\omega$.
 
 The demo uses seven coarse trial ranges, four trial phases, nonlinear two-parameter refinement of promising circular seeds, and up to four subsequent free-state starts. The range bounds are 300–60,000 km. The circular constraint is **removed** in the final fit.
 
@@ -467,24 +471,24 @@ The demo uses seven coarse trial ranges, four trial phases, nonlinear two-parame
 
 The optimizer adjusts all components of
 
-\[
+$$
 \mathbf x(t_0)=(r_x,r_y,r_z,v_x,v_y,v_z)^\mathsf T.
-\]
+$$
 
-RA residuals are wrapped to \([-\pi,\pi)\):
+RA residuals are wrapped to $[-\pi,\pi)$:
 
-\[
+$$
 \Delta\alpha_i=
 \operatorname{atan2}\!\left[
 \sin(\hat\alpha_i-\alpha_i),
 \cos(\hat\alpha_i-\alpha_i)
 \right],\qquad
 \Delta\delta_i=\hat\delta_i-\delta_i.
-\]
+$$
 
 The standardized residual vector, ordered RA then Dec for each timestamp, is
 
-\[
+$$
 \mathbf f(\mathbf x)=
 \left(
 \frac{\Delta\alpha_1}{\sigma_\alpha},
@@ -495,79 +499,79 @@ The standardized residual vector, ordered RA then Dec for each timestamp, is
 \right)^\mathsf T,
 \qquad
 \chi^2(\mathbf x)=\mathbf f^\mathsf T\mathbf f.
-\]
+$$
 
-**Important:** RA errors are *not* multiplied by \(\cos\delta\); this matches the synthetic noise model, which adds noise directly to RA coordinates.
+**Important:** RA errors are *not* multiplied by $\cos\delta$; this matches the synthetic noise model, which adds noise directly to RA coordinates.
 
 The optimizer is SciPy `least_squares(method="trf")`. For numerical scaling, Cartesian corrections use
 
-\[
+$$
 \mathbf D=\operatorname{diag}(1000,1000,1000,1,1,1),
 \qquad
 \mathbf x=\mathbf x_{\rm seed}+\mathbf D\mathbf z,
-\]
+$$
 
-where \(\mathbf z\) is dimensionless, the first three diagonal values are in km, and the last three are in km/s.
+where $\mathbf z$ is dimensionless, the first three diagonal values are in km, and the last three are in km/s.
 
-The returned solution must pass the physical filter: a **bound** Keplerian orbit with perigee altitude \(h_p\ge100\) km. This filter is applied **after** each unconstrained optimization, not enforced continuously during it. If no physically admissible free solution is obtained, the routine returns its best circular seed and marks `success=False`.
+The returned solution must pass the physical filter: a **bound** Keplerian orbit with perigee altitude $h_p\ge100$ km. This filter is applied **after** each unconstrained optimization, not enforced continuously during it. If no physically admissible free solution is obtained, the routine returns its best circular seed and marks `success=False`.
 
-A low \(\chi^2\) does not by itself prove that the orbital elements are accurate, especially for short arcs.
+A low $\chi^2$ does not by itself prove that the orbital elements are accurate, especially for short arcs.
 
 #### 7. Local Monte Carlo sampling around a successful fit
 
 ##### 7.1 Linearized local sensitivity
 
-For a successful deterministic fit \(\hat{\mathbf x}\), define the dimensionless correction \(\mathbf z\) through \(\mathbf x=\hat{\mathbf x}+\mathbf D\mathbf z\). Evaluate the Jacobian
+For a successful deterministic fit $\hat{\mathbf x}$, define the dimensionless correction $\mathbf z$ through $\mathbf x=\hat{\mathbf x}+\mathbf D\mathbf z$. Evaluate the Jacobian
 
-\[
+$$
 J_{ij}=\left.\frac{\partial f_i}{\partial z_j}\right|_{\mathbf z=\mathbf 0},
 \qquad
 J=USV^\mathsf T,\qquad
 S=\operatorname{diag}(s_1,\ldots,s_6).
-\]
+$$
 
-The code estimates \(J\) by centered finite differences. Under an ideal locally linear Gaussian-noise model, the unregularized inverse normal matrix would be \((J^\mathsf TJ)^{-1}\). However, weakly constrained directions make that unstable.
+The code estimates $J$ by centered finite differences. Under an ideal locally linear Gaussian-noise model, the unregularized inverse normal matrix would be $(J^\mathsf TJ)^{-1}$. However, weakly constrained directions make that unstable.
 
 The implemented proposal instead regularizes singular values:
 
-\[
+$$
 \tilde s_j=\max(s_j,s_{\rm floor}),\qquad
 s_{\rm floor}=\max(s_1\times10^{-7},10^{-12}),
-\]
-\[
+$$
+$$
 b_j=\min(1/\tilde s_j,20),\qquad
 C_z=V\,\operatorname{diag}(b_j^2)\,V^\mathsf T.
-\]
+$$
 
-Here \(C_z\) is the **proposal covariance in scaled coordinates**. The maximum standard deviation 20 is a numerical cap, not a physical uncertainty bound.
+Here $C_z$ is the **proposal covariance in scaled coordinates**. The maximum standard deviation 20 is a numerical cap, not a physical uncertainty bound.
 
 ##### 7.2 Drawing candidate states
 
-For each independent draw \(k\),
+For each independent draw $k$,
 
-\[
+$$
 \boldsymbol\xi_k\sim\mathcal N(\mathbf0,I_6),\qquad
 \mathbf z_k=V\,\operatorname{diag}(b_j)\boldsymbol\xi_k,
 \qquad
 \mathbf x_k=\hat{\mathbf x}+\mathbf D\mathbf z_k.
-\]
+$$
 
 The optional `proposal_scale` multiplies the local corrections; its default is 1. These are **independent Gaussian proposal draws**, not a Markov chain. The proposal can be extremely broad in poorly identified directions and may place many samples on nonphysical orbits.
 
 ##### 7.3 Physical and angular-fit acceptance
 
-First reject any orbit that is unbound or has \(h_p<100\) km. For the remaining candidates, compute the **full nonlinear** angular residual vector and accept only if
+First reject any orbit that is unbound or has $h_p<100$ km. For the remaining candidates, compute the **full nonlinear** angular residual vector and accept only if
 
-\[
+$$
 \chi^2(\mathbf x_k)\le
 \chi^2(\hat{\mathbf x})+
 F^{-1}_{\chi^2_6}(0.95)
 \approx\chi^2(\hat{\mathbf x})+12.592,
-\]
+$$
 
-where \(F^{-1}_{\chi^2_6}(0.95)\) is the 95th percentile of a chi-square distribution with **six** degrees of freedom. This is a **chosen local likelihood-ratio-style threshold**, not a guarantee of 95% frequentist coverage for the actual weakly identified nonlinear problem.
+where $F^{-1}_{\chi^2_6}(0.95)$ is the 95th percentile of a chi-square distribution with **six** degrees of freedom. This is a **chosen local likelihood-ratio-style threshold**, not a guarantee of 95% frequentist coverage for the actual weakly identified nonlinear problem.
 
-The acceptance rate is \(n_{\rm acc}/n_{\rm draw}\). It is a **proposal-efficiency statistic**, not the probability that the fitted orbit is correct. Accepted samples are **not reweighted** by their likelihood or proposal density; their histograms show the truncated proposal distribution.
+The acceptance rate is $n_{\rm acc}/n_{\rm draw}$. It is a **proposal-efficiency statistic**, not the probability that the fitted orbit is correct. Accepted samples are **not reweighted** by their likelihood or proposal density; their histograms show the truncated proposal distribution.
 
 The sampler deliberately refuses to run when `fit.success=False`, so the 3-minute case currently has **no** Monte Carlo ensemble.
 
@@ -575,7 +579,7 @@ The sampler deliberately refuses to run when `fit.success=False`, so the 3-minut
 
 The following values are from the saved quick comparison, using **150 proposal draws per successful fit**. These are observed numerical results for this specific synthetic orbit and noise realization, not general performance statistics.
 
-| Case | \(N\) | Fit success | Fitted \(\chi^2\) | \(a_{\rm fit}\) (km) | \(e_{\rm fit}\) | Physical draws | Accepted draws |
+| Case | $N$ | Fit success | Fitted $\chi^2$ | $a_{\rm fit}$ (km) | $e_{\rm fit}$ | Physical draws | Accepted draws |
 |---|---:|---|---:|---:|---:|---:|---:|
 | 3 min | 20 | No | 68.43 (circular fallback) | 28,053.31 (fallback) | ≈0 (fallback) | 0 (not run) | 0 (not run) |
 | 5 min | 30 | Yes | 38.96 | 20,496.81 | 0.256108 | 41 | 39 |
@@ -590,13 +594,13 @@ The **5-minute** and **10-minute** fits both found physical solutions but not th
 
 The **15-minute** result is considerably closer, while the **two-window** fit recovers the truth very accurately. In the two-window case:
 
-\[
+$$
 a_{\rm fit}=22\,181.12\ {\rm km},\quad
 e_{\rm fit}=0.189264,\quad
 i_{\rm fit}=46.95012^\circ,\quad
 \Omega_{\rm fit}=248.70248^\circ,\quad
 \omega_{\rm fit}=269.99182^\circ.
-\]
+$$
 
 The two windows are at 0–15 min and 120–135 min, and Earth rotation is accounted for at each timestamp. The success illustrates the value of a longer temporal baseline and changing geometry **for this particular synthetic case**.
 
@@ -621,7 +625,7 @@ With `--dashboard`, the demo can generate a multi-panel figure for **each succes
 5. Pairwise element-density/correlation panels.
 6. A sampling summary.
 
-The orbital-element plots use locally adjusted display ranges so narrow distributions remain visible. Angular variables \(\Omega,\omega,M\) require wraparound handling near 0°/360°. The dashboard can show many nearly overlapping curves during the observed arc **because all accepted orbits were selected to reproduce those observations**. Extrapolating beyond the measurements makes their divergence easier to see.
+The orbital-element plots use locally adjusted display ranges so narrow distributions remain visible. Angular variables $\Omega,\omega,M$ require wraparound handling near 0°/360°. The dashboard can show many nearly overlapping curves during the observed arc **because all accepted orbits were selected to reproduce those observations**. Extrapolating beyond the measurements makes their divergence easier to see.
 
 The optional parameters `--dashboard-tracks`, `--dashboard-orbit-tracks`, and `--sky-prediction-minutes` control sky-track count, 3D-track count, and prediction duration respectively, in the latest dashboard-enabled version.
 
@@ -649,7 +653,7 @@ python demo_mc_fitted.py \
   --output-dir results
 ```
 
-Outputs include `mc_fitted_summary.csv`, `mc_fitted_comparison.png`, `mc_fitted_<case>.npz` for successful fits, and `mc_fitted_dashboard_<case>.png` when requested. NPZ files contain accepted six-component states at the saved epoch, their \(\chi^2\) scores, the reference fitted state, the acceptance threshold, and classical orbital elements.
+Outputs include `mc_fitted_summary.csv`, `mc_fitted_comparison.png`, `mc_fitted_<case>.npz` for successful fits, and `mc_fitted_dashboard_<case>.png` when requested. NPZ files contain accepted six-component states at the saved epoch, their $\chi^2$ scores, the reference fitted state, the acceptance threshold, and classical orbital elements.
 
 **Code-version note:** Earlier copies of `orbit_fitted_dashboard.py` lack the `max_orbit_tracks` and `sky_prediction_minutes` arguments. Use the latest dashboard adapter and plotting module together with the five-case demo. The older `demo_multipass_fit.py` still writes its own validation outputs to `/mnt/data/`; the newer Monte Carlo demo supports `--output-dir`.
 
@@ -658,7 +662,7 @@ Outputs include `mc_fitted_summary.csv`, `mc_fitted_comparison.png`, `mc_fitted_
 1. **Short-arc observability:** A single brief RA/Dec arc may constrain angular motion well while leaving topocentric range and radial velocity poorly determined.
 2. **Local optimizer dependence:** The finite circular seed grid and post-fit physical filtering can miss admissible non-circular solutions. Failure of `fit.success` is not a proof of physical non-identifiability.
 3. **Local-only sampling:** The Gaussian proposal explores a neighborhood of one fit and does not establish global completeness.
-4. **Statistical calibration:** The chosen \(\Delta\chi^2\) cutoff is approximate; accepted proposal draws are not posterior samples or confidence-interval realizations.
+4. **Statistical calibration:** The chosen $\Delta\chi^2$ cutoff is approximate; accepted proposal draws are not posterior samples or confidence-interval realizations.
 5. **Measurement-model consistency:** The current synthetic noise is Gaussian in the RA and Dec **coordinates**, not necessarily the correct tangent-plane error model for real astrometry.
 6. **Simplified physics:** Two-body dynamics, spherical Earth, approximate GMST/UTC, and omission of J2, atmospheric effects, light-time and rigorous reference-frame transforms limit real-world fidelity.
 7. **Validation design:** Use nested observation sets with identical measurements over shared intervals, many independent noise seeds, and multiple truth orbits before claiming a minimum recoverable arc duration.
